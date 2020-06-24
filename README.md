@@ -142,6 +142,7 @@ Get-Acl -Path hklm:\System\CurrentControlSet\services\regsvc | fl
 -Path => Specifies the path to a resource. Get-Acl gets the security descriptor of the resource indicated by the path.
 ```
 This uses the Get-Acl cmdlet to get the security descriptor of the Control subkey (HKLM:\SYSTEM\CurrentControlSet\services\regsvc) of the registry.
+
 ![0](images/reg/3.png)
 
 3. Create a malicious file with the following payload or you can transfer the windows_service.c file from C:\Users\user\Desktop\Tools\Source folder to your attacker machine and edit it like following.
